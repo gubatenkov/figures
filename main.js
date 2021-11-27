@@ -96,112 +96,64 @@ function init() {
   render();
 }
 
-class Pyramid {
+class Figure {
+  constructor(figure, id) {
+    this.figure = figure;
+    this.id = id;
+  }
+
+  renderFigure() {
+    this.figure.position.x = Math.random() * 2 - 1;
+    this.figure.position.y = Math.random() * 2 - 1;
+    this.figure.position.z = Math.random() * 2 - 1;
+    this.figure.position.normalize();
+    this.figure.position.multiplyScalar(Math.random() * (300 - 100) + 100);
+    scene.add(this.figure);
+    render();
+  }
+
+  removeFigure() {
+    scene.remove(this.figure);
+  }
+
+  showInterface() {
+    const div = document.createElement('div');
+    const btn = document.createElement('button');
+    btn.innerText = 'delete';
+    btn.addEventListener('click', () => {
+      this.removeFigure();
+      div.remove();
+    });
+    div.innerText = this.id;
+    div.appendChild(btn);
+    box.appendChild(div);
+  }
+}
+
+class Pyramid extends Figure {
   constructor(radius = 100, height = 100) {
-    this.geometry = new THREE.CylinderGeometry(0, radius, height, 4, 1);
-    this.material = new THREE.MeshNormalMaterial();
-    this.pyramid = new THREE.Mesh(this.geometry, this.material);
-    this.uuid = this.pyramid.uuid;
-  }
-
-  addPyramid() {
-    this.pyramid.position.x = Math.random() * 2 - 1;
-    this.pyramid.position.y = Math.random() * 2 - 1;
-    this.pyramid.position.z = Math.random() * 2 - 1;
-    this.pyramid.position.normalize();
-    this.pyramid.position.multiplyScalar(300);
-    scene.add(this.pyramid);
-    render();
-  }
-
-  removePyramid() {
-    scene.remove(this.pyramid);
-  }
-
-  showInterface() {
-    const div = document.createElement('div');
-    const btn = document.createElement('button');
-    btn.innerText = 'delete';
-    btn.addEventListener('click', () => {
-      this.removePyramid();
-      div.remove();
-    });
-    div.innerText = this.uuid;
-    div.appendChild(btn);
-    box.appendChild(div);
+    const geometry = new THREE.CylinderGeometry(0, radius, height, 4, 1);
+    const material = new THREE.MeshNormalMaterial();
+    const pyramid = new THREE.Mesh(geometry, material);
+    super(pyramid, pyramid.uuid);
   }
 }
 
-class Sphere {
+class Sphere extends Figure {
   constructor(x = 100, y = 100, z = 100) {
-    this.geometry = new THREE.SphereGeometry(x, y, z);
-    this.material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-    this.sphere = new THREE.Mesh(this.geometry, this.material);
-    this.uuid = this.sphere.uuid;
-  }
-
-  addSphere() {
-    this.sphere.position.x = Math.random() * 2 - 1;
-    this.sphere.position.y = Math.random() * 2 - 1;
-    this.sphere.position.z = Math.random() * 2 - 1;
-    this.sphere.position.normalize();
-    this.sphere.position.multiplyScalar(200);
-    scene.add(this.sphere);
-    render();
-  }
-
-  removeSphere() {
-    scene.remove(this.sphere);
-  }
-
-  showInterface() {
-    const div = document.createElement('div');
-    const btn = document.createElement('button');
-    btn.innerText = 'delete';
-    btn.addEventListener('click', () => {
-      this.removeSphere();
-      div.remove();
-    });
-    div.innerText = this.uuid;
-    div.appendChild(btn);
-    box.appendChild(div);
+    const geometry = new THREE.SphereGeometry(x, y, z);
+    const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    const sphere = new THREE.Mesh(geometry, material);
+    super(sphere, sphere.uuid);
   }
 }
 
-class Cube {
+class Cube extends Figure {
   constructor(x = 100, y = 100, z = 100) {
-    this.geometry = new THREE.BoxGeometry(x, y, z);
-    this.material = new THREE.MeshBasicMaterial({ color: 0x2004f6 });
-    this.cube = new THREE.Mesh(this.geometry, this.material);
-    this.uuid = this.cube.uuid;
-  }
-
-  addCube() {
-    this.cube.position.x = Math.random() * 2 - 1;
-    this.cube.position.y = Math.random() * 2 - 1;
-    this.cube.position.z = Math.random() * 2 - 1;
-    this.cube.position.normalize();
-    this.cube.position.multiplyScalar(100);
-    scene.add(this.cube);
-    render();
-  }
-
-  removeCube() {
-    scene.remove(this.cube);
-    render();
-  }
-
-  showInterface() {
-    const div = document.createElement('div');
-    const btn = document.createElement('button');
-    btn.innerText = 'delete';
-    btn.addEventListener('click', () => {
-      this.removeCube();
-      div.remove();
-    });
-    div.innerText = this.uuid;
-    div.appendChild(btn);
-    box.appendChild(div);
+    const geometry = new THREE.BoxGeometry(x, y, z);
+    const material = new THREE.MeshBasicMaterial({ color: 0x2004f6 });
+    const cube = new THREE.Mesh(geometry, material);
+    super(cube, cube.uuid);
   }
 }
 
@@ -219,13 +171,13 @@ function handleClick() {
     case 'cube':
       let edge = +input.value;
       const cube = new Cube(edge, edge, edge);
-      cube.addCube();
+      cube.renderFigure();
       cube.showInterface();
       break;
     case 'sphere':
       let param = +input.value;
       const spehere = new Sphere(param, param, param);
-      spehere.addSphere();
+      spehere.renderFigure();
       spehere.showInterface();
       break;
     case 'pyramid':
@@ -233,7 +185,7 @@ function handleClick() {
       let height = +values[0] * 100;
       let radius = +values[0] * 100;
       const pyramid = new Pyramid(radius, height);
-      pyramid.addPyramid();
+      pyramid.renderFigure();
       pyramid.showInterface();
       break;
     default:
